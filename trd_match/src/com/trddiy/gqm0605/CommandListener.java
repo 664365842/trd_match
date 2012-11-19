@@ -39,12 +39,12 @@ public class CommandListener implements CommandExecutor {
 			if (args.length != 0) {
 				String arg1 = args[0];
 				if (arg1.equals("reload")
-						&& Trd_match.permission.has(p, "trd.reload")) {
+						&& plugin.getPerm().has(p, "trd.reload")) {
 					plugin.reloadConfig();
 					plugin.sendtoserver("设置已由玩家 " + p.getName() + " 重载");
 					plugin.sendtoplayer(p, "设置已重载");
 				}
-				if (arg1.equals("debug") && Trd_match.permission.has(p, "trd.debug")) {
+				if (arg1.equals("debug") && plugin.getPerm().has(p, "trd.debug")) {
 					Boolean debug = Trd_match.debug;
 					if (debug == false) {
 						Trd_match.debug = true;

@@ -3,5 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/bukkit API"/>
+	<classpathentry kind="lib" path="F:/TDDOWNLOAD/craftbukkit-beta.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Administrator/Desktop/Heroes.jar"/>
+	<classpathentry kind="lib" path="F:/服务端/plugins/Vault.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

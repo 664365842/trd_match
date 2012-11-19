@@ -24,7 +24,7 @@ public class Match1 {
 			for(Player p : ps){
 				p.teleport(arena.getspawn());
 				p.setGameMode(GameMode.ADVENTURE);
-				plugin.sendtobcast("15秒倒计时准备");
+				plugin.sendtoplayer(p,"15秒倒计时准备");
 			}
 				plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
 					public void run(){

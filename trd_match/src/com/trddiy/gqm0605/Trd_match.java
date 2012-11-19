@@ -1,5 +1,7 @@
 package com.trddiy.gqm0605;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
@@ -16,16 +18,22 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.classes.HeroClass;
 
 public class Trd_match extends JavaPlugin {
+	
 	public static Boolean debug = false;
 	private CommandListener cmd;
-	public Heroes hr;
-	public static Configuration config;
-	public Trd_match plugin;
+	private Heroes hr;
+	private static Configuration config;
+	private Trd_match plugin;
 	private Logger log;
-	public static Permission permission = null;
-	public static Economy economy = null;
+	private static Permission permission = null;
+	private static Economy economy = null;
+	
+	private HeroClass bossclass;
+	
+	private Map<String,Arena> arenas = null; 
 
 	public void onEnable() {
 		checkvault();// 检查是否有vault
@@ -37,6 +45,7 @@ public class Trd_match extends JavaPlugin {
 		config = getConfig();
 		config.options().copyDefaults(true);// 拷贝设置文件
 		saveConfig();
+		arenas = new HashMap<String,Arena>();
 //		sendtoserver("单武器限定: " + a);
 //		sendtoserver("武器限制: " + c);
 		setupHeroes();// 加载heroes相关
@@ -126,6 +135,43 @@ public class Trd_match extends JavaPlugin {
 
 	public Hero getHero(Player p) {
 		return getheroesplugin().getCharacterManager().getHero(p);
+	}
+	
+	public void addArena(String arenaname,Arena arena)
+	{
+		arenas.put(arenaname, arena);
+	}
+	
+	public void delArena(String name)
+	{
+		arenas.remove(name);
+	}
+	
+	public boolean setBossClass(String classname)
+	{
+		HeroClass hc = hr.getClassManager().getClass(classname);
+		if(hc == null)
+		{
+			return false;
+		}
+		
+		this.bossclass = hc;
+		return true;
+	}
+	
+	public HeroClass getBossClass()
+	{
+		return bossclass;
+	}
+	
+	public Arena getArena(String name)
+	{
+		return arenas.get(name);
+	}
+	
+	public Permission getPerm()
+	{
+		return permission;
 	}
 }
 

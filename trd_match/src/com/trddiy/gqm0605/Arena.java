@@ -18,20 +18,6 @@ import com.herocraftonline.heroes.characters.classes.HeroClass;
 
 public class Arena {
 	
-	public static final int STAT_EDIT = 	1; //竞技场状态 编辑模式
-	//public static final int STAT_CONFIG =	2; //竞技场状态 配置模式 取消
-	public static final int STAT_OPEN = 	3; //竞技场状态 开放加入模式
-	public static final int STAT_READY =	4; //竞技场状态 关闭加入 玩家准备中
-	public static final int STAT_STARTED = 	5; //竞技场状态 关闭加入 游戏进行中
-	public static final int STAT_DISABLED =	6; //竞技场状态 竞技场禁止中
-	
-	public static final int END_REASON_SUCCESS = 		1; //游戏结束原因 玩家胜利
-	public static final int END_REASON_NOPLAYER =		2; //游戏结束原因 玩家全部死亡
-	public static final int END_REASON_BOSSLEAVE =		3; //游戏结束原因 BOSS异常离场
-	public static final int END_REASON_ARENADISABLE =	4; //游戏结束原因 竞技场被强制关闭
-	public static final int END_REASON_ARENAEDIT =		5; //游戏结束原因 竞技场进入编辑模式被强制关闭
-	public static final int END_REASON_UNKNOW =			0; //游戏结束原因 未知
-	
 	private Trd_match plugin;
 	private List<Player> players;
 	private List<Player> livingplayers;
@@ -50,7 +36,7 @@ public class Arena {
 	private int maxplayer;
 	
 	private boolean started;
-	private int arenastate;
+	private ArenaState arenastate;
 	
 	private Location ready;
 	private Location playerspawn;
@@ -75,7 +61,7 @@ public class Arena {
 		livingplayers = new ArrayList<Player>();
 		playerslocation = new HashMap<Player,Location>();
 		boss = null;
-		arenastate = STAT_EDIT;
+		arenastate = ArenaState.STAT_EDIT;
 		
 		playerlistener = new PlayerListener(this);
 		plugin.getServer().getPluginManager().registerEvents(playerlistener, plugin);
@@ -99,7 +85,7 @@ public class Arena {
 		livingplayers = new ArrayList<Player>();
 		playerslocation = new HashMap<Player,Location>();
 		boss = null;
-		arenastate = STAT_EDIT;
+		arenastate = ArenaState.STAT_EDIT;
 		plugin.addArena(name, this);
 		
 		playerlistener = new PlayerListener(this);
@@ -121,7 +107,7 @@ public class Arena {
 		livingplayers = new ArrayList<Player>();
 		playerslocation = new HashMap<Player,Location>();
 		boss = null;
-		arenastate = STAT_EDIT;
+		arenastate = ArenaState.STAT_EDIT;
 		plugin.addArena(name, this);
 		
 		playerlistener = new PlayerListener(this);
@@ -142,13 +128,13 @@ public class Arena {
 //	}
 	
 	//设定竞技场的状态
-	public void setArenaState(int state)
+	public void setArenaState(ArenaState state)
 	{
 		this.arenastate = state;
 	}
 	
 	//获取目前竞技场状态
-	public int getArenaState()
+	public ArenaState getArenaState()
 	{
 		return this.arenastate;
 	}
@@ -204,7 +190,7 @@ public class Arena {
 				public void run(){
 					Arena arena = plugin.getArena(name);
 					Hero h = plugin.getHero(arena.getboss());
-					arena.setArenaState(STAT_STARTED);
+					arena.setArenaState(ArenaState.STAT_STARTED);
 					arena.arenaBoardcast("游戏开始!");
 					arena.setbossoldclass(h.getHeroClass());
 					h.setHeroClass(arena.getBossClass(),false);
@@ -220,7 +206,7 @@ public class Arena {
 	}
 	
 	//游戏结束处理
-	public void endGame(int reason)
+	public void endGame(EndReason reason)
 	{
 		switch(reason)
 		{
@@ -230,7 +216,7 @@ public class Arena {
 				{
 					playerLeave(p,"玩家胜利,游戏结束");
 				}
-				arenastate = STAT_OPEN;
+				arenastate = ArenaState.STAT_OPEN;
 				clear();
 				break;
 			}
@@ -240,14 +226,14 @@ public class Arena {
 				{
 					playerLeave(p,"BOSS胜利,游戏结束");
 				}	
-				arenastate = STAT_OPEN;
+				arenastate = ArenaState.STAT_OPEN;
 				clear();
 				break;
 			}
 		case END_REASON_BOSSLEAVE:			
 			{
 
-				arenastate = STAT_OPEN;
+				arenastate = ArenaState.STAT_OPEN;
 				this.arenaBoardcast("BOSS脱离竞技场,游戏重新准备");
 				for(Player p: players)
 				{
@@ -261,7 +247,7 @@ public class Arena {
 			{
 				playerLeave(p,"竞技场关闭");
 			}	
-			arenastate = STAT_DISABLED;
+			arenastate = ArenaState.STAT_DISABLED;
 			clear();
 			break;
 		}
@@ -271,7 +257,7 @@ public class Arena {
 			{
 				playerLeave(p,"竞技场进入编辑模式");
 			}	
-			arenastate = STAT_EDIT;
+			arenastate = ArenaState.STAT_EDIT;
 			clear();
 			break;
 		}
@@ -282,7 +268,7 @@ public class Arena {
 				{
 					playerLeave(p,"竞技场发生未知错误");
 				}					
-				arenastate = STAT_OPEN;
+				arenastate = ArenaState.STAT_OPEN;
 				clear();
 				break;
 			}
@@ -328,7 +314,7 @@ public class Arena {
 			return false;
 		}
 		
-		arenastate = STAT_OPEN;
+		arenastate = ArenaState.STAT_OPEN;
 		
 		return true;
 	}
@@ -386,13 +372,13 @@ public class Arena {
 	{
 		livingplayers.remove(player);
 		if(livingplayers.size() == 0)
-			endGame(Arena.END_REASON_NOPLAYER);
+			endGame(EndReason.END_REASON_NOPLAYER);
 	}
 	
 	public void bossDeath()
 	{
 		bossliving = false;
-		endGame(Arena.END_REASON_SUCCESS);
+		endGame(EndReason.END_REASON_SUCCESS);
 	}
 	
 	public void playerLeave(Player player,String reason)
@@ -408,7 +394,7 @@ public class Arena {
 				if(bossliving)
 				{
 					bossliving = false;
-					endGame(Arena.END_REASON_BOSSLEAVE);
+					endGame(EndReason.END_REASON_BOSSLEAVE);
 				}
 			}
 			if(livingplayers.contains(player))
@@ -422,7 +408,7 @@ public class Arena {
 	
 	public boolean playerJoin(Player player)
 	{
-		if(arenastate == STAT_OPEN)
+		if(arenastate == ArenaState.STAT_OPEN)
 		{
 			if(players.contains(player))
 			{
@@ -442,15 +428,15 @@ public class Arena {
 		else
 		{
 			String reason = ChatColor.RED+"你无法加入这个竞技场,";
-			if(this.arenastate==this.STAT_DISABLED)
+			if(this.arenastate==ArenaState.STAT_DISABLED)
 			{
 				reason+="竞技场已被禁止";
 			}
-			else if(this.arenastate==this.STAT_EDIT)
+			else if(this.arenastate==ArenaState.STAT_EDIT)
 			{
 				reason+=",竞技场正在编辑中";
 			}
-			else if(this.arenastate==this.STAT_READY||this.arenastate==this.STAT_STARTED)
+			else if(this.arenastate==ArenaState.STAT_READY||this.arenastate==ArenaState.STAT_STARTED)
 			{
 				reason+="游戏已经开始";
 			}
@@ -464,9 +450,9 @@ public class Arena {
 	
 	public void editArena()
 	{
-		if(this.arenastate==this.STAT_READY||this.arenastate==this.STAT_STARTED)
-			this.endGame(this.END_REASON_ARENAEDIT);
-		else if(this.arenastate==this.STAT_OPEN)
+		if(this.arenastate==ArenaState.STAT_READY||this.arenastate==ArenaState.STAT_STARTED)
+			this.endGame(EndReason.END_REASON_ARENAEDIT);
+		else if(this.arenastate==ArenaState.STAT_OPEN)
 		{
 			for(Player p:players)
 			{
@@ -478,9 +464,9 @@ public class Arena {
 	
 	public void disableArena()
 	{
-		if(this.arenastate==this.STAT_READY||this.arenastate==this.STAT_STARTED)
-			this.endGame(this.END_REASON_ARENADISABLE);
-		else if(this.arenastate==this.STAT_OPEN)
+		if(this.arenastate==ArenaState.STAT_READY||this.arenastate==ArenaState.STAT_STARTED)
+			this.endGame(EndReason.END_REASON_ARENADISABLE);
+		else if(this.arenastate==ArenaState.STAT_OPEN)
 		{
 			for(Player p:players)
 			{

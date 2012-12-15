@@ -47,8 +47,6 @@ public class Trd_match extends JavaPlugin {
 		checkvault();// 检查是否有vault
 		setupPermissions();// 启动vault 权限
 		setupEconomy();// 启动vault 经济
-//		final Boolean a;
-//		final Boolean c;
 		this.log = getLogger();
 		
 		pm = this.getServer().getPluginManager();
@@ -60,10 +58,7 @@ public class Trd_match extends JavaPlugin {
 		loadAccessCommands(); //从配置文件中获取允许在竞技场中使用的命令
 		
 		setupHeroes();// 加载heroes相关
-		
 		arenas = new HashMap<String,Arena>();
-//		sendtoserver("单武器限定: " + a);
-//		sendtoserver("武器限制: " + c);
 		
 		getCommand("tm").setExecutor(cmd);
 		sendtoserver(" v" + getDescription().getVersion() + "by:"

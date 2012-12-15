@@ -72,7 +72,7 @@ public class PlayerListener implements Listener{
 		
 		Player player = event.getPlayer();
 		
-		if(this.parentarena.getArenaState() != Arena.STAT_READY)
+		if(this.parentarena.getArenaState() != ArenaState.STAT_READY)
 			return;
 		
 		if(!this.parentarena.getplayers().contains(player))
@@ -100,12 +100,12 @@ public class PlayerListener implements Listener{
 		
 		if(parentarena.getplayers().contains(player))
 		{
-			if(parentarena.getArenaState() == Arena.STAT_READY || parentarena.getArenaState() == Arena.STAT_OPEN)
+			if(parentarena.getArenaState() == ArenaState.STAT_READY || parentarena.getArenaState() == ArenaState.STAT_OPEN)
 			{
 				event.setCancelled(true);
 				return;
 			}
-			if(parentarena.getArenaState() == Arena.STAT_STARTED)
+			if(parentarena.getArenaState() == ArenaState.STAT_STARTED)
 			{
 				if(damager!=parentarena.getboss())
 				{

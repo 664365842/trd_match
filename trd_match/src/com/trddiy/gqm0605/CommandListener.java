@@ -134,9 +134,9 @@ public class CommandListener implements CommandExecutor {
 						}
 						for(int i=0;i<entrys.length;i++)
 						{
-							if(((Arena)((Entry)entrys[i]).getValue()).getArenaState()==Arena.STAT_OPEN)
+							if(((Arena)((Entry)entrys[i]).getValue()).getArenaState()==ArenaState.STAT_OPEN)
 								arenalist+=ChatColor.GREEN;
-							else if(((Arena)((Entry)entrys[i]).getValue()).getArenaState()==Arena.STAT_READY||((Arena)((Entry)entrys[i]).getValue()).getArenaState()==Arena.STAT_STARTED)
+							else if(((Arena)((Entry)entrys[i]).getValue()).getArenaState()==ArenaState.STAT_READY||((Arena)((Entry)entrys[i]).getValue()).getArenaState()==ArenaState.STAT_STARTED)
 								arenalist+=ChatColor.YELLOW;
 							else
 								arenalist+=ChatColor.RED;

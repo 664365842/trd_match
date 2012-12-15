@@ -1,0 +1,23 @@
+name: Trd_Match
+main: com.trddiy.gqm0605.Trd_match
+version: 0.3
+author: 664365842,yueou
+description: >
+             None
+commands:
+  tm:
+    description: the commands for Trd_match
+    permission:  
+    usage: /tm help
+permissions:
+    tm.*:
+        description: Gives all permissions to player
+        children:
+            tm.use: true
+            tm.admin: true
+    tm.user:
+        description: 'Allows to use Arena'
+        default: op
+    tm.admin:
+        description: 'Admin permissions for admins'
+        default: op

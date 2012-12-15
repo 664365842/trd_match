@@ -1,0 +1,15 @@
+CommonOption:
+	PermissionCommands:
+		-list
+		-msg
+		-tm
+		-trd
+
+ArenaOption:
+	MaxArena:5
+
+BossOption:
+	ClassLevel1:
+	ClassLevel2:
+	ClassLevel3:
+	ClassLevel4:

@@ -6,140 +6,118 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.Plugin;
 
-public class PlayerListener implements Listener{
-	
+public class PlayerListener implements Listener {
+
 	private Arena parentarena;
-	
-	public PlayerListener(Arena arena)
-	{
+
+	public PlayerListener(Arena arena) {
 		this.parentarena = arena;
 	}
-	
+
 	@EventHandler
-	public void onBlockBreak(BlockBreakEvent event)
-	{
-		if(event.isCancelled())
+	public void onBlockBreak(BlockBreakEvent event) {
+		if (event.isCancelled())
 			return;
-		
+
 		Player player = event.getPlayer();
-		
-		for(Player p : parentarena.getplayers())
-		{
-			if((Player)p == player)
-			{
+
+		for (Player p : parentarena.getplayers()) {
+			if ((Player) p == player) {
 				event.setCancelled(true);
 				return;
 			}
 		}
-		if(player == parentarena.getboss())
-		{
+		if (player == parentarena.getboss()) {
 			event.setCancelled(true);
 			return;
 		}
 	}
-	
+
 	@EventHandler
-	public void onPlayerSendCommand(PlayerCommandPreprocessEvent event)
-	{
-		if(event.isCancelled())
+	public void onPlayerSendCommand(PlayerCommandPreprocessEvent event) {
+		if (event.isCancelled())
 			return;
-		
-		Player player = event .getPlayer();
-		
-		if(parentarena.getplayers().contains(player))
-		{
+
+		Player player = event.getPlayer();
+
+		if (parentarena.getplayers().contains(player)) {
 			String commands[] = event.getMessage().split(" ");
-			if(!parentarena.getPlugin().getCommandList().contains(commands[0]))
-			{
+			if (!parentarena.getPlugin().getCommandList().contains(commands[0])) {
 				event.setCancelled(true);
 				player.sendMessage(ChatColor.RED + "你不能在竞技场中使用这个命令");
-			}			
+			}
 		}
 	}
-	
+
 	@EventHandler
-	public void onPlayerMove(PlayerMoveEvent event)
-	{
-		if(event.isCancelled())
+	public void onPlayerMove(PlayerMoveEvent event) {
+		if (event.isCancelled())
 			return;
-		
+
 		Player player = event.getPlayer();
-		
-		if(this.parentarena.getArenaState() != ArenaState.STAT_READY)
+
+		if (this.parentarena.getArenaState() != ArenaState.STAT_READY)
 			return;
-		
-		if(!this.parentarena.getplayers().contains(player))
+
+		if (!this.parentarena.getplayers().contains(player))
 			return;
-		
+
 		event.setCancelled(true);
-		
+
 	}
-	
+
 	@EventHandler
-	public void onPlayerDamage(EntityDamageByEntityEvent event)
-	{
-		if(event.isCancelled())
+	public void onPlayerDamage(EntityDamageByEntityEvent event) {
+		if (event.isCancelled())
 			return;
-		
-		if(!(event.getEntity() instanceof Player))
+
+		if (!(event.getEntity() instanceof Player))
 			return;
-		
-		if(!(event.getDamager() instanceof Player))
+
+		if (!(event.getDamager() instanceof Player))
 			return;
-		
-		
-		Player player = (Player)event.getEntity();
-		Player damager = (Player)event.getDamager();
-		
-		if(parentarena.getplayers().contains(player))
-		{
-			if(parentarena.getArenaState() == ArenaState.STAT_READY || parentarena.getArenaState() == ArenaState.STAT_OPEN)
-			{
+
+		Player player = (Player) event.getEntity();
+		Player damager = (Player) event.getDamager();
+
+		if (parentarena.getplayers().contains(player)) {
+			if (parentarena.getArenaState() == ArenaState.STAT_READY
+					|| parentarena.getArenaState() == ArenaState.STAT_OPEN) {
 				event.setCancelled(true);
 				return;
 			}
-			if(parentarena.getArenaState() == ArenaState.STAT_STARTED)
-			{
-				if(damager!=parentarena.getboss())
-				{
+			if (parentarena.getArenaState() == ArenaState.STAT_STARTED) {
+				if (damager != parentarena.getboss()) {
 					event.setCancelled(true);
 					return;
 				}
 			}
-			
+
 		}
 	}
-	
+
 	@EventHandler
-	public void onPlayerDeath(PlayerDeathEvent event)
-	{
+	public void onPlayerDeath(PlayerDeathEvent event) {
 		Player player = event.getEntity();
-		
-		if(parentarena.getplayers().contains(player))
-		{
-			if(parentarena.getboss() == player)
-			{
+
+		if (parentarena.getplayers().contains(player)) {
+			if (parentarena.getboss() == player) {
 				parentarena.bossDeath();
-			}
-			else if(parentarena.isLiving(player))
-			{
+			} else if (parentarena.isLiving(player)) {
 				parentarena.playerDeath(player);
 			}
 		}
 	}
-	
+
 	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent event)
-	{
+	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		parentarena.playerLeave(player,"游戏关闭,");
+		parentarena.playerLeave(player, "游戏关闭,");
 	}
 
 }

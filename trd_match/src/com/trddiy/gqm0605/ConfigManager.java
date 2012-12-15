@@ -6,6 +6,7 @@ import org.bukkit.configuration.Configuration;
 
 public class ConfigManager {
 	
+	@SuppressWarnings("unused")
 	private Trd_match plugin;
 	
 	private Configuration config; 

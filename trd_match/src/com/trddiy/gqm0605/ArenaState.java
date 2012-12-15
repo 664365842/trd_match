@@ -1,11 +1,19 @@
 package com.trddiy.gqm0605;
 
 public enum ArenaState {
-	 STAT_EDIT, //竞技场状态 编辑模式
-	// STAT_CONFIG 	2, //竞技场状态 配置模式 取消
-	 STAT_OPEN, //竞技场状态 开放加入模式
-	 STAT_READY, //竞技场状态 关闭加入 玩家准备中
-	 STAT_STARTED, //竞技场状态 关闭加入 游戏进行中
-	 STAT_DISABLED, //竞技场状态 竞技场禁止中
-	 
+	 STAT_EDIT("编辑中"),
+	// STAT_CONFIG
+	 STAT_OPEN("开放中"),
+	 STAT_READY("准备游戏中"),
+	 STAT_STARTED("进行游戏中"),
+	 STAT_DISABLED("禁止加入");
+	 private String state;
+	 private ArenaState(){
+	 }
+	 private ArenaState(String state){
+		 this.state = state;
+	 }
+	 public String getstatetext(){
+		 return state;
+	 }
 }
